@@ -109,7 +109,7 @@ public class WebSampleTest implements IAbstractTest {
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened!");
         
-        Screenshot.capture(getDriver(), "explicit fullsize area screenshot if allowed", true);
+        Screenshot.capture(getDriver(), "explicit fullsize area screenshot", true);
         
         NewsPage newsPage = homePage.getFooterMenu().openNewsPage();
         Assert.assertTrue(newsPage.isPageOpened(), "News page is not opened!");

@@ -20,14 +20,15 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
+import org.testng.SkipException;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import com.qaprosoft.carina.core.foundation.IAbstractTest;
-import com.zebrunner.agent.core.annotation.TestLabel;
 import com.qaprosoft.carina.core.foundation.utils.ownership.MethodOwner;
 import com.qaprosoft.carina.core.foundation.utils.tag.Priority;
 import com.qaprosoft.carina.core.foundation.utils.tag.TestPriority;
+import com.qaprosoft.carina.core.foundation.webdriver.Screenshot;
 import com.qaprosoft.carina.demo.gui.components.FooterMenu;
 import com.qaprosoft.carina.demo.gui.components.NewsItem;
 import com.qaprosoft.carina.demo.gui.components.compare.ModelSpecs;
@@ -37,6 +38,7 @@ import com.qaprosoft.carina.demo.gui.pages.CompareModelsPage;
 import com.qaprosoft.carina.demo.gui.pages.HomePage;
 import com.qaprosoft.carina.demo.gui.pages.ModelInfoPage;
 import com.qaprosoft.carina.demo.gui.pages.NewsPage;
+import com.zebrunner.agent.core.annotation.TestLabel;
 
 /**
  * This sample shows how create Web test.
@@ -57,6 +59,8 @@ public class WebSampleTest implements IAbstractTest {
         //Closing advertising if it's displayed
         homePage.getWeValuePrivacyAd().closeAdIfPresent();
         
+        Screenshot.capture(getDriver(), "explicit visible area screenshot");
+        
         // Select phone brand
         homePage = new HomePage(getDriver());
         BrandModelsPage productsPage = homePage.selectBrand("Samsung");
@@ -69,6 +73,7 @@ public class WebSampleTest implements IAbstractTest {
         softAssert.assertEquals(productInfoPage.readRam(), "6/8GB RAM", "Invalid ram info!");
         softAssert.assertEquals(productInfoPage.readBattery(), "4500mAh", "Invalid battery info!");
         softAssert.assertAll();
+        Assert.fail("explicit failure");
     }
 
 
@@ -81,18 +86,19 @@ public class WebSampleTest implements IAbstractTest {
         HomePage homePage = new HomePage(getDriver());
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened");
-        // Open model compare page
-        FooterMenu footerMenu = homePage.getFooterMenu();
-        Assert.assertTrue(footerMenu.isUIObjectPresent(2), "Footer menu wasn't found!");
-        CompareModelsPage comparePage = footerMenu.openComparePage();
-        // Compare 3 models
-        List<ModelSpecs> specs = comparePage.compareModels("Samsung Galaxy J3", "Samsung Galaxy J5", "Samsung Galaxy J7 Pro");
-        // Verify model announced dates
-        SoftAssert softAssert = new SoftAssert();
-        softAssert.assertEquals(specs.get(0).readSpec(SpecType.ANNOUNCED), "2016, March 31");
-        softAssert.assertEquals(specs.get(1).readSpec(SpecType.ANNOUNCED), "2015, June 19");
-        softAssert.assertEquals(specs.get(2).readSpec(SpecType.ANNOUNCED), "2017, June");
-        softAssert.assertAll();
+        throw new SkipException("skipped");
+//        // Open model compare page
+//        FooterMenu footerMenu = homePage.getFooterMenu();
+//        Assert.assertTrue(footerMenu.isUIObjectPresent(2), "Footer menu wasn't found!");
+//        CompareModelsPage comparePage = footerMenu.openComparePage();
+//        // Compare 3 models
+//        List<ModelSpecs> specs = comparePage.compareModels("Samsung Galaxy J3", "Samsung Galaxy J5", "Samsung Galaxy J7 Pro");
+//        // Verify model announced dates
+//        SoftAssert softAssert = new SoftAssert();
+//        softAssert.assertEquals(specs.get(0).readSpec(SpecType.ANNOUNCED), "2016, March 31");
+//        softAssert.assertEquals(specs.get(1).readSpec(SpecType.ANNOUNCED), "2015, June 19");
+//        softAssert.assertEquals(specs.get(2).readSpec(SpecType.ANNOUNCED), "2017, June");
+//        softAssert.assertAll();
     }
     
     @Test()
@@ -102,6 +108,8 @@ public class WebSampleTest implements IAbstractTest {
         HomePage homePage = new HomePage(getDriver());
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened!");
+        
+        Screenshot.capture(getDriver(), "explicit fullsize area screenshot if allowed", true);
         
         NewsPage newsPage = homePage.getFooterMenu().openNewsPage();
         Assert.assertTrue(newsPage.isPageOpened(), "News page is not opened!");
